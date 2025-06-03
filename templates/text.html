@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}InfiniTranslate - Text Translation{% endblock %}
+
+{% block content %}
+
+<form id="text-translate-form">
+    <textarea id="input-text" rows="8" placeholder="Enter text to translate..."></textarea>
+    <input type="text" id="lang" placeholder="Enter language or style (e.g. pirate)">
+    <button type="submit">Translate</button>
+    <div id="translation-result" style="padding: 20px; display: none;">
+        <h2>Translation Result:</h2>
+        <pre id="translated-output"></pre>
+    </div>
+</form>
+
+<script>
+    document.getElementById("text-translate-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const text = document.getElementById("input-text").value;
+        const lang = document.getElementById("lang").value;
+
+        const res = await fetch("/text-translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, lang })
+        });
+
+        const data = await res.json();
+        const resultDiv = document.getElementById("translation-result");
+        const output = document.getElementById("translated-output");
+
+        if (data.translation) {
+            output.textContent = data.translation;
+            resultDiv.style.display = "block";
+        } else {
+            output.textContent = "Error: " + (data.error || "Unknown error");
+            resultDiv.style.display = "block";
+        }
+    });
+</script>
+
+{% endblock %}

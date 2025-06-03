@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}InfiniTranslate - Website Translation{% endblock %}
+
+{% block content %}
+
+<form id="translate-form">
+    <input type="text" id="url" placeholder="Enter URL">
+    <input type="text" id="lang" placeholder="Enter language or style (e.g. pirate)">
+    <button type="submit">Translate</button>
+</form>
+
+<div id="iframe-container">
+    <iframe id="result-frame" style="width:100%;height:800px;"></iframe>
+    <!-- Spinner overlay -->
+    <div id="spinner" style="
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background: rgba(18, 18, 18, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;">
+    <div class="loader"></div>
+    <p style="color: #ccc;">Translating...</p>
+</div>
+
+<script>
+    document.getElementById("translate-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const url = document.getElementById("url").value;
+        const lang = document.getElementById("lang").value;
+
+        const container = document.getElementById("iframe-container");
+        //container.innerHTML = `<iframe id="result-frame" style="width:100%;height:750px;"></iframe>`;
+        const iframe = document.getElementById("result-frame");
+        const spinner = document.getElementById("spinner");
+        spinner.style.display = "block";
+
+
+
+        const res = await fetch("/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url, lang })
+        });
+
+        const data = await res.json();
+        if (data.html) {
+            iframe.srcdoc = '';
+            setTimeout(() => {
+                iframe.srcdoc = data.html;
+                spinner.style.display = "none";
+            }, 50);
+        } else {
+            alert("Error: " + (data.error || "Unknown error"));
+            spinner.style.display = "none";
+        }
+    });
+</script>
+
+{% endblock %}

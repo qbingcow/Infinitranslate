@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ url_for('static', filename='css/theme.css') }}" rel="stylesheet" />
+    <title>{% block title %}InfiniTranslate{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">InfiniTranslate</div>
+        <div class="navbar-links">
+            <a href="/">Website</a>
+            <a href="/text">Text</a>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span>
+                Made with boredom by <a href="https://github.com/qbingcow" target="_blank">qbingcow</a>
+            </span>
+        </div>
+    </footer>
+</body>
+</html>
